@@ -24,7 +24,7 @@ class ListInteractor : NSObject, ListInteractorInput {
         let endOfNextWeek = NSCalendar.currentCalendar().dateForEndOfFollowingWeekWithDate(today)
         
         dataManager.todoItemsBetweenStartDate(today,
-            endDate: endOfNextWeek,
+            endDate: endOfNextWeek!,
             completion: { todoItems in
                 let upcomingItems = self.upcomingItemsFromToDoItems(todoItems)
                 self.output?.foundUpcomingItems(upcomingItems)
