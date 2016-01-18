@@ -9,35 +9,30 @@
 import Foundation
 import CoreData
 
-extension Array {
-    func lastObject() -> T {
-        let endIndex = self.endIndex
-        let lastItemIndex = endIndex - 1
-        
-        return self[lastItemIndex]
-    }
-}
-
 class CoreDataStore : NSObject {
     var persistentStoreCoordinator : NSPersistentStoreCoordinator?
     var managedObjectModel : NSManagedObjectModel?
     var managedObjectContext : NSManagedObjectContext?
     
-    init() {
+    override init() {
         managedObjectModel = NSManagedObjectModel.mergedModelFromBundles(nil)
-        
-        persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: managedObjectModel)
+        guard let moc = managedObjectModel else {
+            super.init()
+            return
+        }
+
+        let persistentStoreCoordinator = NSPersistentStoreCoordinator(managedObjectModel: moc)
         
         let domains = NSSearchPathDomainMask.UserDomainMask
         let directory = NSSearchPathDirectory.DocumentDirectory
-        
-        let error = NSError()
-        let applicationDocumentsDirectory : AnyObject = NSFileManager.defaultManager().URLsForDirectory(directory, inDomains: domains).lastObject()
+
+        let applicationDocumentsDirectory = NSFileManager.defaultManager().URLsForDirectory(directory, inDomains: domains).last
         let options = [NSMigratePersistentStoresAutomaticallyOption : true, NSInferMappingModelAutomaticallyOption : true]
         
-        let storeURL = applicationDocumentsDirectory.URLByAppendingPathComponent("VIPER-SWIFT.sqlite")
-        
-        persistentStoreCoordinator!.addPersistentStoreWithType(NSSQLiteStoreType, configuration: "", URL: storeURL, options: options, error: nil)
+        if let storeURL = applicationDocumentsDirectory?.URLByAppendingPathComponent("VIPER-SWIFT.sqlite") {
+
+        let _ = try? persistentStoreCoordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: "", URL: storeURL, options: options)
+        }
 
         managedObjectContext = NSManagedObjectContext(concurrencyType: NSManagedObjectContextConcurrencyType.MainQueueConcurrencyType)
         managedObjectContext!.persistentStoreCoordinator = persistentStoreCoordinator
@@ -46,26 +41,33 @@ class CoreDataStore : NSObject {
         super.init()
     }
     
-    func fetchEntriesWithPredicate(predicate: NSPredicate, sortDescriptors: AnyObject[], completionBlock: ((ManagedTodoItem[]) -> Void)!) {
+    func fetchEntriesWithPredicate(predicate: NSPredicate, sortDescriptors: [AnyObject], completionBlock: (([ManagedTodoItem]) -> Void)!) {
         let fetchRequest = NSFetchRequest(entityName: "TodoItem")
         fetchRequest.predicate = predicate
         fetchRequest.sortDescriptors = []
         
         managedObjectContext?.performBlock {
-            let queryResults = self.managedObjectContext?.executeFetchRequest(fetchRequest, error: nil)
-            let managedResults = queryResults! as ManagedTodoItem[]
+            let queryResults = try? self.managedObjectContext?.executeFetchRequest(fetchRequest)
+            let managedResults = queryResults! as! [ManagedTodoItem]
             completionBlock(managedResults)
         }
     }
     
-    func newTodoItem() -> ManagedTodoItem {
-        let entityDescription = NSEntityDescription.entityForName("TodoItem", inManagedObjectContext: managedObjectContext)
-        let newEntry = NSManagedObject(entity: entityDescription, insertIntoManagedObjectContext: managedObjectContext) as ManagedTodoItem
+    func newTodoItem() -> ManagedTodoItem? {
+        guard let moc = managedObjectContext, entityDescription = NSEntityDescription.entityForName("TodoItem", inManagedObjectContext: moc) else { return nil }
+
+        if let newEntry = NSManagedObject(entity: entityDescription, insertIntoManagedObjectContext: moc) as? ManagedTodoItem {
         
         return newEntry
+        } else {
+            return nil
+        }
     }
-    
+
     func save() {
-        managedObjectContext?.save(nil)
+        do {
+            try managedObjectContext?.save()
+        } catch _ {
+        }
     }
 }
