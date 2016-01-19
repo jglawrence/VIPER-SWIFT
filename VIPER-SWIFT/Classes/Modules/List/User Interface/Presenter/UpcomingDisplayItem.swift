@@ -20,14 +20,5 @@ struct UpcomingDisplayItem : Equatable, CustomStringConvertible {
 }
 
 func == (leftSide: UpcomingDisplayItem, rightSide: UpcomingDisplayItem) -> Bool {
-    var hasEqualSections = false
-    hasEqualSections = rightSide.title == leftSide.title
-    
-    if hasEqualSections == false {
-        return false
-    }
-    
-    hasEqualSections = rightSide.dueDate == rightSide.dueDate
-    
-    return hasEqualSections
+    return rightSide.title == leftSide.title && rightSide.dueDate == leftSide.dueDate
 }

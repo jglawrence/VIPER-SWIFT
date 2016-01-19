@@ -10,22 +10,13 @@
 import Foundation
 
 struct UpcomingDisplaySection : Equatable {
-    var name : String = ""
-    var imageName : String = ""
-    var items : [UpcomingDisplayItem] = []
-    
-    init(name: String, imageName: String, items: [UpcomingDisplayItem]?) {
-        self.name = name
-        self.imageName = imageName
-        
-        if items != nil {
-            self.items = items!
-        }
-    }
+    let name : String
+    let imageName : String
+    let items : [UpcomingDisplayItem]?
 }
 
 func == (leftSide: UpcomingDisplaySection, rightSide: UpcomingDisplaySection) -> Bool {
-    var hasEqualSections = false
-    hasEqualSections = rightSide.items == leftSide.items
-    return hasEqualSections
+    guard let rightItems = rightSide.items, leftItems = leftSide.items else { return false }
+
+    return rightItems == leftItems
 }

@@ -13,7 +13,5 @@ struct UpcomingDisplayData : Equatable {
 }
 
 func == (leftSide: UpcomingDisplayData, rightSide: UpcomingDisplayData) -> Bool {
-    var hasEqualSections = false
-    hasEqualSections = rightSide.sections == leftSide.sections
-    return hasEqualSections
+    return rightSide.sections == leftSide.sections
 }
