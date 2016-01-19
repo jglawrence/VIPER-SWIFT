@@ -10,7 +10,7 @@ import Foundation
 
 class UpcomingDisplayDataCollection {
     let dayFormatter = NSDateFormatter()
-    var sections : Dictionary<NearTermDateRelation, [UpcomingDisplayItem]> = Dictionary()
+    var sections : [NearTermDateRelation: [UpcomingDisplayItem]] = [:]
     
     init() {
         dayFormatter.dateFormat = NSDateFormatter.dateFormatFromTemplate("EEEE", options: 0, locale: NSLocale.autoupdatingCurrentLocale())
@@ -45,7 +45,7 @@ class UpcomingDisplayDataCollection {
     }
     
     func formattedDay(date: NSDate, dateRelation: NearTermDateRelation) -> String {
-        if dateRelation == NearTermDateRelation.Today {
+        if dateRelation == .Today {
             return ""
         }
         
@@ -83,11 +83,7 @@ class UpcomingDisplayDataCollection {
     }
     
     func sortedNearTermDateRelations() -> [NearTermDateRelation] {
-        var array : [NearTermDateRelation] = []
-        array.insert(NearTermDateRelation.Today, atIndex: 0)
-        array.insert(NearTermDateRelation.Tomorrow, atIndex: 1)
-        array.insert(NearTermDateRelation.LaterThisWeek, atIndex: 2)
-        array.insert(NearTermDateRelation.NextWeek, atIndex: 3)
+        let array : [NearTermDateRelation] = [.Today, .Tomorrow, .LaterThisWeek, .NextWeek]
         return array
     }
     
