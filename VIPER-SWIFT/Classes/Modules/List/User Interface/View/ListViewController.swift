@@ -14,12 +14,14 @@ var ListEntryCellIdentifier = "ListEntryCell"
 class ListViewController : UITableViewController, ListViewInterface {
     var eventHandler : ListModuleInterface?
     var dataProperty : UpcomingDisplayData?
-    
+    var strongTableView : UITableView?
+
     @IBOutlet var noContentView : UIView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        strongTableView = tableView
         configureView()
     }
     
@@ -46,7 +48,7 @@ class ListViewController : UITableViewController, ListViewInterface {
     }
     
     func showUpcomingDisplayData(data: UpcomingDisplayData) {
-        view = tableView
+        view = strongTableView
         
         dataProperty = data
         reloadEntries()
