@@ -6,9 +6,6 @@
 //  Copyright (c) 2014 Mutual Mobile. All rights reserved.
 //
 
-import Foundation
-
-
 protocol ListInteractorInput {
     func findUpcomingItems()
 }

@@ -6,8 +6,6 @@
 //  Copyright (c) 2014 Mutual Mobile. All rights reserved.
 //
 
-import Foundation
-
 protocol AddModuleDelegate {
     func addModuleDidCancelAddAction()
     func addModuleDidSaveAddAction()

@@ -6,8 +6,6 @@
 //  Copyright (c) 2014 Mutual Mobile. All rights reserved.
 //
 
-import Foundation
-
 protocol ListViewInterface {
     func showNoContentMessage()
     func showUpcomingDisplayData(data: UpcomingDisplayData)
