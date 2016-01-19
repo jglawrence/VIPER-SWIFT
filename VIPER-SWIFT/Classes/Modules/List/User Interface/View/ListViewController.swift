@@ -14,14 +14,12 @@ var ListEntryCellIdentifier = "ListEntryCell"
 class ListViewController : UITableViewController, ListViewInterface {
     var eventHandler : ListModuleInterface?
     var dataProperty : UpcomingDisplayData?
-    var strongTableView : UITableView?
     
     @IBOutlet var noContentView : UIView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        strongTableView = tableView
+
         configureView()
     }
     
@@ -48,7 +46,7 @@ class ListViewController : UITableViewController, ListViewInterface {
     }
     
     func showUpcomingDisplayData(data: UpcomingDisplayData) {
-        view = strongTableView
+        view = tableView
         
         dataProperty = data
         reloadEntries()
@@ -59,35 +57,33 @@ class ListViewController : UITableViewController, ListViewInterface {
     }
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        var numberOfSections = dataProperty?.sections.count
+        guard let numberOfSections = dataProperty?.sections.count else { return 0 }
         
-        if dataProperty?.sections.count == nil {
-            numberOfSections = 0
-        }
-        
-        return numberOfSections!
+        return numberOfSections
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let upcomingSection = dataProperty?.sections[section]
-        return upcomingSection!.items.count
+        guard let upcomingSectionItems = dataProperty?.sections[section].items else { return 0 }
+
+        return upcomingSectionItems.count
     }
     
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String {
-        let upcomingSection = dataProperty?.sections[section]
-        return upcomingSection!.name
+        guard let upcomingSection = dataProperty?.sections[section] else { return "" }
+
+        return upcomingSection.name
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let upcomingSection = dataProperty?.sections[indexPath.section]
-        let upcomingItem = upcomingSection!.items[indexPath.row]
-        
         let cell = tableView.dequeueReusableCellWithIdentifier(ListEntryCellIdentifier, forIndexPath: indexPath) as UITableViewCell
-        
+
+        guard let upcomingSection = dataProperty?.sections[indexPath.section],
+            let upcomingItem = upcomingSection.items?[indexPath.row] else { return cell }
+
         cell.textLabel?.text = upcomingItem.title;
         cell.detailTextLabel?.text = upcomingItem.dueDate;
-        cell.imageView?.image = UIImage(named: upcomingSection!.imageName)
-        cell.selectionStyle = UITableViewCellSelectionStyle.None;
+        cell.imageView?.image = UIImage(named: upcomingSection.imageName)
+        cell.selectionStyle = .None;
 
         return cell
     }

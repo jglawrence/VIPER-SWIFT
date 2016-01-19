@@ -21,13 +21,15 @@ class ListInteractor : NSObject, ListInteractorInput {
     
     func findUpcomingItems() {
         let today = clock.today()
-        let endOfNextWeek = NSCalendar.currentCalendar().dateForEndOfFollowingWeekWithDate(today)
+        guard let endOfNextWeek = NSCalendar.currentCalendar().dateForEndOfFollowingWeekWithDate(today) else { return }
         
         dataManager.todoItemsBetweenStartDate(today,
-            endDate: endOfNextWeek!,
-            completion: { todoItems in
-                let upcomingItems = self.upcomingItemsFromToDoItems(todoItems)
-                self.output?.foundUpcomingItems(upcomingItems)
+            endDate: endOfNextWeek,
+            completion: { [weak self] todoItems in
+                if let todoItems = todoItems,
+                    upcomingItems = self?.upcomingItemsFromToDoItems(todoItems) {
+                        self?.output?.foundUpcomingItems(upcomingItems)
+                }
         })
     }
     
