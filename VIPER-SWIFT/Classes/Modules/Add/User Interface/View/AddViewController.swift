@@ -10,13 +10,12 @@ import Foundation
 import UIKit
 
 class AddViewController: UIViewController, UITextFieldDelegate, AddViewInterface {
-    var eventHandler : AddModuleInterface?
-
     @IBOutlet var nameTextField : UITextField?
     @IBOutlet var datePicker : UIDatePicker?
-    
-    var minimumDate : NSDate = NSDate()
-    var transitioningBackgroundView : UIView = UIView()
+
+    var eventHandler : AddModuleInterface?
+    var minimumDate = NSDate()
+    var transitioningBackgroundView = UIView()
     
     @IBAction func save(sender: AnyObject) {
         if let text = nameTextField?.text, date = datePicker?.date {
@@ -54,8 +53,8 @@ class AddViewController: UIViewController, UITextFieldDelegate, AddViewInterface
         eventHandler?.cancelAddAction()
     }
     
-    func setEntryName(name: NSString) {
-        nameTextField?.text = name as String
+    func setEntryName(name: String) {
+        nameTextField?.text = name
     }
     
     func setEntryDueDate(date: NSDate) {
