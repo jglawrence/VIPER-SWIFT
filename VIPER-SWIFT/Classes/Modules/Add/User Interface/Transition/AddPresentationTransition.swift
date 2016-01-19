@@ -11,12 +11,12 @@ import UIKit
 
 class AddPresentationTransition: NSObject, UIViewControllerAnimatedTransitioning {
     func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
-        return 0.72
+        return transitionDurationInSeconds
     }
     
     func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
-        let fromVC = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey)
-        let toVC = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey) as! AddViewController
+        guard let fromVC = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey),
+            toVC = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey) as? AddViewController else { return }
         
         toVC.transitioningBackgroundView.backgroundColor = UIColor.darkGrayColor()
         toVC.transitioningBackgroundView.alpha = 0.0
@@ -29,15 +29,15 @@ class AddPresentationTransition: NSObject, UIViewControllerAnimatedTransitioning
         let toViewFrame = CGRectMake(0, 0, 260, 300)
         toVC.view.frame = toViewFrame
         
-        let finalCenter = CGPointMake(fromVC!.view.bounds.size.width / 2, 20 + toViewFrame.size.height / 2)
+        let finalCenter = CGPointMake(fromVC.view.bounds.size.width / 2, 20 + toViewFrame.size.height / 2)
         toVC.view.center = CGPointMake(finalCenter.x, finalCenter.y - 1000)
         
         let options = UIViewAnimationOptions.CurveEaseIn
         
         UIView.animateWithDuration(self.transitionDuration(transitionContext),
-            delay: 0.0,
-            usingSpringWithDamping: 0.64,
-            initialSpringVelocity: 0.22,
+            delay: transitionAnimationDelay,
+            usingSpringWithDamping: transitionAnimationSpringWithDamping,
+            initialSpringVelocity: transitionAnimationInitialVelocity,
             options: options,
             animations: {
                 toVC.view.center = finalCenter

@@ -9,23 +9,27 @@
 import Foundation
 import UIKit
 
+let transitionDurationInSeconds = 0.72
+let transitionAnimationDelay = 0.0
+let transitionAnimationSpringWithDamping: CGFloat = 0.64
+let transitionAnimationInitialVelocity: CGFloat = 0.22
+
 class AddDismissalTransition : NSObject, UIViewControllerAnimatedTransitioning {
 
     func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
-        return 0.72
+        return transitionDurationInSeconds
     }
 
     func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
-        let fromVC = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey) as! AddViewController
+        guard let fromVC = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey) as? AddViewController else { return }
         
         let finalCenter = CGPointMake(160.0, (fromVC.view.bounds.size.height / 2) - 1000.0)
-        
         let options = UIViewAnimationOptions.CurveEaseIn
-        
+
         UIView.animateWithDuration(self.transitionDuration(transitionContext),
-            delay: 0.0,
-            usingSpringWithDamping: 0.64,
-            initialSpringVelocity: 0.22,
+            delay: transitionAnimationDelay,
+            usingSpringWithDamping: transitionAnimationSpringWithDamping,
+            initialSpringVelocity: transitionAnimationInitialVelocity,
             options: options,
             animations: {
                 fromVC.view.center = finalCenter
@@ -37,5 +41,5 @@ class AddDismissalTransition : NSObject, UIViewControllerAnimatedTransitioning {
             }
         )
     }
-    
+
 }
