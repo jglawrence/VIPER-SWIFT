@@ -41,8 +41,6 @@ extension NSCalendar {
     func dateForBeginningOfDay(date: NSDate) -> NSDate? {
         let newComponent = components([.Year, .Month, .Day], fromDate: date)
         let newDate = dateFromComponents(newComponent)
-
-        // TODO: See how this differs from the date passed in
         return newDate
     }
     
